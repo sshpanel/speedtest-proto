@@ -26,8 +26,9 @@ app.get("/speedtest/download", (req, res) => {
 });
 
 app.post("/speedtest/upload", (req, res) => {
-  const bytes = req.body ? req.body.length : 0;
-  res.json({ receivedBytes: bytes });
+  let bytes = 0;
+  req.on('data', chunk => { bytes += chunk.length; });
+  req.on('end', () => res.json({ receivedBytes: bytes }));
 });
 
 app.get("/health", (req, res) => {
